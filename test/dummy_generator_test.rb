@@ -34,9 +34,15 @@ class DummyGeneratorTest < Minitest::Test
     dummy.create_dummy_data
     assert_equal 9, dummy.dummy_data_set.length
     assert_equal true, dummy.dummy_data_set.length == dummy.dummy_data_set.uniq.length
-    dummy.create_dummy_data.write_to_file
   end
 
+  def test_it_can_write_to_a_file
+    file = './data/teams.csv'
+    dummy = DummyGenerator.new(file, 8, "dummy_teams.csv")
+
+    dummy.create_dummy_data
+    dummy.write_to_file
+  end
 
 
 end
