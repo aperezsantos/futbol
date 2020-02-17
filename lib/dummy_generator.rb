@@ -1,11 +1,10 @@
-require 'csv'
-
 class DummyGenerator
   attr_reader :source_file, :dummy_size, :dummy_data_set
-  def initialize(source_file, dummy_size)
+  def initialize(source_file, dummy_size, new_file_name = "untitled.csv")
   @source_file = source_file
   @dummy_size = dummy_size
   @dummy_data_set = []
+  @new_file_name = new_file_name.to_s
   end
 
   def lines_of_data
@@ -26,8 +25,10 @@ class DummyGenerator
   end
 
   def write_to_file
-    CSV.generate_line(row) do |row|
-      require "pry"; binding.pry
+    CSV.open('./data/' + @new_file_name, "wb") do |csv|
+      @dummy_data_set.each do |row|
+        csv << row
+      end
     end
   end
 
