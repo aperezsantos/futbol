@@ -112,7 +112,8 @@ class StatTracker
   end
 
   def winningest_team
-    win_ratio = @game_collection.total_games_by_team.merge(@game_collection.total_games_by_team) do |team_id, total_games|
+    games_by_team = @game_collection.total_games_by_team
+    win_ratio = games_by_team.merge(games_by_team) do |team_id, total_games|
       @gtc.total_wins_by_team[team_id] / total_games.to_f
     end
     max_team_name(win_ratio)

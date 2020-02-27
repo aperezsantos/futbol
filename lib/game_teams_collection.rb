@@ -51,7 +51,7 @@ class GameTeamsCollection
   def hoa_win_percentage(hoa)
     hoa_games_played = hoa_games_by_team(hoa)
     hoa_games_won = hoa_wins_by_team(hoa)
-    hoa_percentage = hoa_games_played.merge(hoa_games_played) do |team, hoa_game|
+    hoa_games_played.merge(hoa_games_played) do |team, hoa_game|
       hoa_games_won[team] / hoa_game.to_f
     end
   end
@@ -86,7 +86,7 @@ class GameTeamsCollection
     game_teams_grouped_by_team_id = game_teams.group_by do |game_team|
       game_team.team_id
     end
-    games_per_team = game_teams_grouped_by_team_id.each_pair do |team_id, games_by_team|
+    game_teams_grouped_by_team_id.each_pair do |team_id, games_by_team|
       total_goals = games_by_team.map do |single_game|
         single_game.goals
       end
@@ -98,7 +98,7 @@ class GameTeamsCollection
   def scores_as_visitor
     games_played_by_team = hoa_games_by_team('away')
     scores_by_team = hoa_goals_by_team('away')
-    average_score_game = games_played_by_team.merge(games_played_by_team) do |team, games|
+    games_played_by_team.merge(games_played_by_team) do |team, games|
       games_played_by_team[team] = scores_by_team[team] / games.to_f
     end
   end

@@ -99,10 +99,6 @@ class StatTrackerTest < Minitest::Test
     assert_equal 3, @stat_tracker.lowest_total_score
   end
 
-  def test_count_of_teams
-    assert_equal 32, @stat_tracker.count_of_teams
-  end
-
   def test_best_offense
     assert_equal "FC Dallas", @stat_tracker.best_offense
   end
@@ -155,10 +151,6 @@ class StatTrackerTest < Minitest::Test
 
   def test_it_knows_the_fewest_points_a_team_has_scored
     assert_equal 2, @stat_tracker.fewest_goals_scored("3")
-  end
-
-  def test_count_of_teams
-    assert_equal 32, @stat_tracker.count_of_teams
   end
 
   def test_best_fans
