@@ -1,7 +1,11 @@
 require 'csv'
 require_relative './game_teams'
+require_relative '../modules/mathables.rb'
+
 
 class GameTeamsCollection
+  include Mathable
+  
   attr_reader :game_teams
   def initialize(game_teams_data)
     @game_teams = create_game_teams(game_teams_data)
@@ -45,6 +49,14 @@ class GameTeamsCollection
     hoa_wins_by_team
   end
 
+  def hoa_win_percentage(hoa)
+    hoa_games_played = hoa_games_by_team(hoa)
+    hoa_games_won = hoa_wins_by_team(hoa)
+    hoa_percentage = hoa_games_played.merge(hoa_games_played) do |team, hoa_game|
+      hoa_games_won[team] / hoa_game.to_f
+    end
+  end
+
   def total_wins_by_team
     total_wins = Hash.new(0)
     game_teams.each do |game|
@@ -55,32 +67,6 @@ class GameTeamsCollection
       end
     end
     total_wins
-  end
-
-  def total_loss_by_team
-    total_loss = Hash.new(0)
-    game_teams.each do |game|
-      if game.result == "LOSS"
-        total_loss[game.team_id] += 1
-      elsif game.result == "WIN"
-        total_loss[game.team_id] =+ 0
-      end
-    end
-    total_loss
-  end
-
-  def total_tie_by_team
-    total_loss = Hash.new(0)
-    game_teams.each do |game|
-      if game.result == "TIE"
-        total_loss[game.team_id] += 1
-      elsif game.result == "WIN"
-        total_loss[game.team_id] =+ 0
-      elsif game.result == "LOSS"
-        total_loss[game.team_id] += 0
-      end
-    end
-    total_loss
   end
 
   def find_games_in_season(season)
@@ -105,8 +91,8 @@ class GameTeamsCollection
       total_goals = games_by_team.map do |single_game|
         single_game.goals
       end
-      game_team_averages = (total_goals.sum.to_f / total_goals.length).round(2)
-      (game_teams_grouped_by_team_id[team_id] = game_team_averages)
+      game_team_averages = divide(total_goals.sum, total_goals)
+        game_teams_grouped_by_team_id[team_id] = game_team_averages
     end
   end
 
@@ -116,5 +102,14 @@ class GameTeamsCollection
     average_score_game = games_played_by_team.merge(games_played_by_team) do |team, games|
       games_played_by_team[team] = scores_by_team[team] / games.to_f
     end
+  end
+
+  def scores_as_home_team
+    average_goals_home_game = {}
+      hoa_goals_by_team("home").each do |team_id, total_home_goals|
+      next if total_home_goals == 0
+      average_goals_home_game [team_id] = total_home_goals / hoa_games_by_team("home")[team_id].to_f
+    end
+    average_goals_home_game
   end
 end
